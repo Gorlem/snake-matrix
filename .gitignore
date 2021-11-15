@@ -152,3 +152,6 @@ dist
 !.vscode/*.code-snippets
 
 # End of https://www.toptal.com/developers/gitignore/api/node,visualstudiocode
+
+esp/arduino_secrets.h
+game/.env

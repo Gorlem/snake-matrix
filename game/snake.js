@@ -32,6 +32,8 @@ class Snake {
         }
 
         if (next[0] === this.snake[0][0] && next[1] === this.snake[0][1]) {
+            // TODO: Error: Attempt to assign to const or readonly variable
+            // Stürzt immer wieder random ab, manchmal direkt beim start
             next = [...this.snake[0]];
         }
 
@@ -73,7 +75,7 @@ class Snake {
 
         console.log('---')
         for (let row of board) {
-            console.log(row);
+            console.log(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7]);
         }
     }
 

@@ -10,5 +10,8 @@
   "license": "MIT",
   "dependencies": {
     "mqtt": "^4.2.8"
+  },
+  "devDependencies": {
+    "dotenv": "^10.0.0"
   }
 }
