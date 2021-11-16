@@ -34,6 +34,7 @@ class Snake {
         if (next[0] === this.snake[0][0] && next[1] === this.snake[0][1]) {
             // TODO: Error: Attempt to assign to const or readonly variable
             // Stürzt immer wieder random ab, manchmal direkt beim start
+            // liegt glaube ich daran, dass der esp teilweise random 'button' geschickt hat, ist jetzt auskommentiert
             next = [...this.snake[0]];
         }
 
