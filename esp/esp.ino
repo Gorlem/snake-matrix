@@ -92,12 +92,12 @@ void loop() {
     Serial.println();
   }
 
-  int buttonValue = analogRead(buttonPin);
-  Serial.println(buttonValue);
-  if (buttonValue == 0) {
-    Serial.println("knopf");
-    sendMessage("button");
-  }
+  //int buttonValue = analogRead(buttonPin);
+  //Serial.println(buttonValue);
+  //if (buttonValue == 0) {
+  //  Serial.println("knopf");
+  //  sendMessage("button");
+  //}
 
   int xValue = analogRead(xPin);
   Serial.println(xValue);
