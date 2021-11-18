@@ -1,43 +1,49 @@
-const mqtt = require('mqtt');
 require('dotenv').config();
-const snake = require('./snake');
 
-//const client = mqtt.connect('mqtt://192.168.2.144')
-const client = mqtt.connect('mqtt://'+process.env.MQTT_IP)
+const mqtt = require('mqtt');
+
+const { Game } = require('./Game');
+const { Direction } = require('./Direction');
+
+const ip = process.env.MQTT_IP;
+
+const client = mqtt.connect(`mqtt://${ip}`);
 
 client.on('error', (err) => {
     console.log(err);
 })
 
 client.on('connect', () => {
-    console.log('connected');
+    console.log(`Connected to ${ip}`);
     client.subscribe('game/snake/direction');
+    client.subscribe('game/snake/action');
 });
 
 
-let nextDirection = 'down';
+let nextDirection = Direction.Right;
 
-const game = new snake.Snake(8, 8);
+const game = new Game(8, 8);
 
 client.on('message', (topic, payload) => {
     console.log(topic);
-    if (topic == 'game/snake/direction') {
-        var direction = payload.toString();
-        nextDirection = direction;
+    if (topic === 'game/snake/direction') {
+        nextDirection = Direction.fromString(payload.toString());
+    }
+    if (topic === 'game/snake/action' ) {
+        game.action();
     }
 });
 
-game.display();
+console.log(game.getBoard());
 
 setInterval(() => {
     game.move(nextDirection);
-    game.display();
+    console.log(game.getBoard());
+    
+    const board = game.getBoard();
+    client.publish('game/snake/board', board);
 
-    const board = game.getBoard().flat();
-    let bits = ""
-    for (let i=0; i<board.length;i++) {
-        bits = bits+String( board[i] > 0 ? 1 : 0);
-    }
-    let buf = Buffer.from(board, 'binary');
-    client.publish("game/snake/board", buf)
+    const extras = game.getExtras().flat();
+    console.log(extras);
+    client.publish('game/snake/extras', Buffer.from(extras));
 }, 1000);
