@@ -15,6 +15,7 @@ window.addEventListener('load', () => {
     MQTTconnect();
 })
 
+
 let mqtt;
 
 let reconnectTimeout = 2000;
