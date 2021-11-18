@@ -5,6 +5,10 @@ class State {
         this.game = game;
     }
 
+    tick() {
+        
+    }
+
     move(direction) {
 
     }

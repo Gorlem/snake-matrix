@@ -35,10 +35,10 @@ class CountdownState extends State {
             0b00000100,
             0b00111000,
             0b00000000,
-        ]   
+        ]
     ]
 
-    move(direction) {
+    tick() {
         if (this.countdown === 0) {
             this.game.snake();
             return;

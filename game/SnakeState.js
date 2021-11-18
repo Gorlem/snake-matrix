@@ -7,28 +7,32 @@ class SnakeState extends State {
 
         this.snake = [[0, 2], [0, 1], [0, 0]];
         this.moveFood();
+        this.direction = Direction.Right;
     }
 
     move(direction) {
-        console.log(direction);
+        this.direction = direction;
+    }
+    
+    tick() {
         const next = [...this.snake[0]];
 
-        if (direction === Direction.Right) {
+        if (this.direction === Direction.Right) {
             next[1] += 1;
             if (next[1] >= this.game.rows) {
                 next[1] = 0;
             }
-        } else if (direction === Direction.Left) {
+        } else if (this.direction === Direction.Left) {
             next[1] -= 1;
             if (next[1] < 0) {
                 next[1] = this.game.rows - 1;
             }
-        } else if (direction === Direction.Down) {
+        } else if (this.direction === Direction.Down) {
             next[0] += 1;
             if (next[0] >= this.game.columns) {
                 next[0] = 0;
             }
-        } else if (direction === Direction.Up) {
+        } else if (this.direction === Direction.Up) {
             next[0] -= 1;
             if (next[0] < 0) {
                 next[0] = this.game.columns - 1;
@@ -36,11 +40,6 @@ class SnakeState extends State {
         } else {
             // Unknown direction
             return;
-        }
-
-        // Wofür hab ich das nochmal gemacht? 
-        if (next[0] === this.snake[0][0] && next[1] === this.snake[0][1]) {
-            next = [...this.snake[0]];
         }
 
         // Wenn die Schlange in sich selbst läuft hat man verloren

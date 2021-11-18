@@ -30,6 +30,10 @@ class Game {
         this.state.move(direction);
     }
 
+    tick() {
+        this.state.tick();
+    }
+
     getBoard() {
         return this.state.getBoard();
     }

@@ -27,7 +27,7 @@ const game = new Game(8, 8);
 client.on('message', (topic, payload) => {
     console.log(topic);
     if (topic === 'game/snake/direction') {
-        nextDirection = Direction.fromString(payload.toString());
+        game.move(Direction.fromString(payload.toString()))
     }
     if (topic === 'game/snake/action' ) {
         game.action();
@@ -37,7 +37,7 @@ client.on('message', (topic, payload) => {
 console.log(game.getBoard());
 
 setInterval(() => {
-    game.move(nextDirection);
+    game.tick();
     console.log(game.getBoard());
     
     const board = game.getBoard();
