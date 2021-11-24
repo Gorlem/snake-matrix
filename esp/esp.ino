@@ -68,6 +68,7 @@ void connectMqtt() {
   //mqttClient.subscribe(topic);
   
   mqttClient.subscribe("game/snake/board");
+  mqttClient.subscribe("game/snake/extras");
 }
 
 int pos1 = 0;
@@ -79,6 +80,7 @@ int opos2 = 0;
 int count = 0;
 int foodpos1 = false;
 int foodpos2 = false;
+bool blinking = false;
 
 void loop() {
   mqttClient.poll();
@@ -92,12 +94,14 @@ void loop() {
     Serial.println();
   }
 
-  //int buttonValue = analogRead(buttonPin);
-  //Serial.println(buttonValue);
-  //if (buttonValue == 0) {
-  //  Serial.println("knopf");
-  //  sendMessage("button");
-  //}
+  int buttonValue = analogRead(buttonPin);
+  Serial.println(buttonValue);
+  if (buttonValue == 0) {
+    Serial.println("knopf");
+    mqttClient.beginMessage("game/snake/action");
+    mqttClient.print("");
+    mqttClient.endMessage();
+  }
 
   int xValue = analogRead(xPin);
   Serial.println(xValue);
@@ -125,39 +129,19 @@ void loop() {
 
   Serial.println("----------");
 
-  // move point with joystick
-  /*
-  if (pos1 < 0) {
-    pos1 = 0;
-  }
-  if (pos2 < 0) {
-    pos2 = 0;
-  }
-  if (pos1 > 7) {
-    pos1 = 7;
-  }
-  if (pos2 > 7) {
-    pos2 = 7;
-  }
-  mx.setPoint(opos1, opos2, false);
-  mx.setPoint(pos1, pos2, true);
-  opos1 = pos1;
-  opos2 = pos2;
-  */
-  //uint8_t buf[64];
-  //mx.setBuffer(0,64,0x1111000011110000111100001111000011110000111100001111000011110000);
-  
-
-  if (count == 1) {
-    mx.setPoint(foodpos1, foodpos2, true);  
-    count=0;
-  } else {
-    mx.setPoint(foodpos1, foodpos2, false);  
+  if (blinking) {
     count++;
+    bool blink = count >= 0 ? true : false;
+    if (count >= 5) {
+      count = -5;
+    }
+  
+    mx.setPoint(foodpos1, 7 - foodpos2, blink);
   }
+  
   Serial.println(foodpos1);
   Serial.println(foodpos2);
-  delay(500);
+  delay(100);
 }
 
 void sendMessage(char message[]) {
@@ -174,29 +158,30 @@ void onMqttMessage(int messageSize) {
   Serial.print("', length ");
   Serial.print(messageSize);
   Serial.println(" bytes:");
-  int count1 = 7;
-  int count2 = 0;
-  // use the Stream interface to print the contents
-  while (mqttClient.available()) {
-    int message = (int)mqttClient.read();
-    Serial.print(message);
-    if(message == 0) {
-      mx.setPoint(count1, count2, false);
-    } else if (message == 2){
-      mx.setPoint(count1, count2, true);  
-    } else if (message == 1) {
-      mx.setPoint(count1, count2, true);  
-    } else {
-      foodpos1 = count1;
-      foodpos2 = count2;
-    }
-    count2++;
-    if(count2 == 8) {
-      count2 = 0;
-      count1--;
+
+  String messageTopic = mqttClient.messageTopic();
+
+  if (messageTopic == "game/snake/board") {
+    int rowCount = 0;
+    while (mqttClient.available()) {
+      uint8_t row = (uint8_t)mqttClient.read();
+      Serial.print(row);
+      mx.setRow(rowCount, row);
+      rowCount++;
     }
   }
-  Serial.println();
 
+  if (messageTopic == "game/snake/extras") {
+    if (mqttClient.available()) {
+      foodpos1 = mqttClient.read();
+      foodpos2 = mqttClient.read();
+      blinking = true;
+    } else if (blinking) {
+      blinking = false;
+      mx.setPoint(foodpos1, 7 - foodpos2, false);
+    }
+  }
+  
+  Serial.println();
   Serial.println();
 }
