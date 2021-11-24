@@ -113,20 +113,20 @@
 </head>
 <body>
     <div class="flex-container">
-        <svg id="game" viewBox="0 0 900 900">
+        <svg id="game" viewBox="0 0 900 900" onclick="sendAction()">
 
         </svg>
         <div class="buttons">
-            <button class="arrow left" onclick="console.log('left')">
+            <button class="arrow left" onclick="sendDirection('left')">
 
             </button>
-            <button class="arrow up" onclick="console.log('up')">
+            <button class="arrow up" onclick="sendDirection('up')">
 
             </button>
-            <button class="arrow down" onclick="console.log('down')">
+            <button class="arrow down" onclick="sendDirection('down')">
 
             </button>
-            <button class="arrow right" onclick="console.log('right')">
+            <button class="arrow right" onclick="sendDirection('right')">
 
             </button>
         </div>
