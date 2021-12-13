@@ -25,8 +25,7 @@ let port = 8080;
 function onConnect() {
     console.log('connected');
 
-    mqtt.subscribe('game/snake/board');
-    mqtt.subscribe('game/snake/extras');
+    mqtt.subscribe('board');
 
 }
 
@@ -42,18 +41,16 @@ function MQTTconnect() {
 }
 
 function onMessageArrived(msg) {
-    if (msg.destinationName === 'game/snake/board') {
+    if (msg.destinationName === 'board') {
         let board = msg.payloadBytes
-        console.log(board)
-
-        //let count = 0;
+ 
         for (let i = 0; i < 8; i++) {
             let base2 = board[i].toString(2)
-            console.log(i + ' : ' + base2.length)
+            
             for (let j = 0; j < 8 - base2.length; j++) {
                 d3.select('circle#p' + i + j).attr('class', 'off');
             }
-            console.log('for..')
+            
             for (let j = 0; j < base2.length; j++) {
                 console.log((8 - base2.length + j))
                 if (base2[j] == 1) {
@@ -64,23 +61,8 @@ function onMessageArrived(msg) {
                         .attr('class', 'off');
                 }
             }
-            //for (let j = 0; j < 8; j++) {
-            // if (board[count] === 0) {
-            //     d3.select('circle#p' + i + j)
-            //         .attr('class', 'off');
-            // } else if (board[count] === 2 || board[count] === 1) {
-            //     d3.select('circle#p' + i + j)
-            //         .attr('class', 'on');
-            // } else {
-            //     d3.select('circle#p' + i + j)
-            //         .attr('class', 'food');
-            // }
-            //count++;
-            //}
         }
-    } else {
-        let food = msg.payloadBytes;
-        d3.select('circle#p' + food[0] + food[1]).attr('class', 'food')
+        d3.select('circle#p' + board[8] + board[9]).attr('class', 'food')
     }
 }
 
@@ -119,31 +101,12 @@ function checkKey(e) {
 
 function sendDirection(direction) {
     let message = new Paho.MQTT.Message(direction);
-    message.destinationName = 'game/snake/direction'
+    message.destinationName = 'direction'
     mqtt.send(message)
 }
 
 function sendAction () {
     let message = new Paho.MQTT.Message('');
-    message.destinationName = 'game/snake/action'
+    message.destinationName = 'action'
     mqtt.send(message)
 }
-
-// const client = mqtt.connect(host, port)
-//
-// client.on('error', (err) => {
-//     console.log(err);
-// })
-//
-// client.on('connect', () => {
-//     console.log('connected');
-//     client.subscribe('game/snake/board');
-// });
-//
-// client.on('message', (topic, payload) => {
-//     console.log(topic);
-//     if (topic == 'game/snake/board') {
-//         var direction = payload.toString();
-//         nextDirection = direction;
-//     }
-// });
