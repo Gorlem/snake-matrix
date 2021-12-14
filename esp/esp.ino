@@ -1,5 +1,5 @@
+// Import 8x8-Dot-Matrix library and define constants
 #include <MD_MAX72xx.h>
-
 #define HARDWARE_TYPE MD_MAX72XX::GENERIC_HW
 #define MAX_DEVICES 1
 
@@ -9,34 +9,36 @@
 
 MD_MAX72XX mx = MD_MAX72XX(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
 
+// Import libraries
 #include <WiFi.h>
 #include <ArduinoMqttClient.h>
 
+// Import settings from arduino_secrets.h
 #include "arduino_secrets.h"
 const char ssid[] = SECRET_SSID;
 const char password[] = SECRET_PASS;
 
-//const char broker[] = "192.168.2.144";
 IPAddress broker(MQTT_SERVER);
 int port = 1883;
-
-const char topic[] = "game/snake/direction";
 
 WiFiClient wifiClient;
 MqttClient mqttClient(wifiClient);
 
+// define pins for Joystick
 int xPin = 35;
 int yPin = 32;
 int buttonPin = 33;
 
+// Run on startup
 void setup() {
   mx.begin();
   Serial.begin(115200);
-  
+
   connectWifi();
   connectMqtt();
 }
 
+// Connect to WiFi
 void connectWifi() {
   WiFi.mode(WIFI_STA);
 
@@ -49,6 +51,7 @@ void connectWifi() {
   Serial.println(WiFi.localIP());
 }
 
+// Connect to MQTT Broker
 void connectMqtt() {
   Serial.print("Attempting to connect to the MQTT broker: ");
   Serial.println(broker);
@@ -65,23 +68,16 @@ void connectMqtt() {
   // set the message receive callback
   mqttClient.onMessage(onMqttMessage);
   
-  //mqttClient.subscribe(topic);
-  
   mqttClient.subscribe("game/snake/board");
   mqttClient.subscribe("game/snake/extras");
 }
-
-int pos1 = 0;
-int pos2 = 0;
-int opos1 = 0;
-int opos2 = 0;
-
 
 int count = 0;
 int foodpos1 = false;
 int foodpos2 = false;
 bool blinking = false;
 
+// continuous loop
 void loop() {
   mqttClient.poll();
 
@@ -144,15 +140,15 @@ void loop() {
   delay(100);
 }
 
+// Send message to MQTT Broker
 void sendMessage(char message[]) {
-  mqttClient.beginMessage(topic);
+  mqttClient.beginMessage("game/snake/direction");
   mqttClient.print(message);
   mqttClient.endMessage();
 }
 
-
+// Receive message from MQTT Broker
 void onMqttMessage(int messageSize) {
-  // we received a message, print out the topic and contents
   Serial.println("Received a message with topic '");
   Serial.print(mqttClient.messageTopic());
   Serial.print("', length ");

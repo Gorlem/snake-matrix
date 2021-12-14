@@ -1,9 +1,8 @@
+// After page load add circles to svg and connect to MQTT
 window.addEventListener('load', () => {
     let svg = d3.select("svg#game")
-    console.log(svg)
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
-
             svg.append("circle")
                 .attr('id', 'p' + i + j)
                 .attr('cy', (i + 1) * 100)
@@ -15,21 +14,12 @@ window.addEventListener('load', () => {
     MQTTconnect();
 })
 
-
+// MQTT Broker
 let mqtt;
-
-let reconnectTimeout = 2000;
 let host = 'localhost';
 let port = 8080;
 
-function onConnect() {
-    console.log('connected');
-
-    mqtt.subscribe('game/snake/board');
-    mqtt.subscribe('game/snake/extras');
-
-}
-
+// Connect to MQTT Broker
 function MQTTconnect() {
     console.log('connecting to ' + host + ' ' + port);
     mqtt = new Paho.MQTT.Client(host, port, "", "clientjs", transport = "websockets");
@@ -41,6 +31,14 @@ function MQTTconnect() {
     mqtt.connect(options);
 }
 
+// Subscribe to MQTT topics after successful connection to MQTT Broker
+function onConnect() {
+    console.log('connected');
+    mqtt.subscribe('game/snake/board');
+    mqtt.subscribe('game/snake/extras');
+}
+
+// Receive MQTT Message and Display the information
 function onMessageArrived(msg) {
     if (msg.destinationName === 'game/snake/board') {
         let board = msg.payloadBytes
@@ -64,19 +62,6 @@ function onMessageArrived(msg) {
                         .attr('class', 'off');
                 }
             }
-            //for (let j = 0; j < 8; j++) {
-            // if (board[count] === 0) {
-            //     d3.select('circle#p' + i + j)
-            //         .attr('class', 'off');
-            // } else if (board[count] === 2 || board[count] === 1) {
-            //     d3.select('circle#p' + i + j)
-            //         .attr('class', 'on');
-            // } else {
-            //     d3.select('circle#p' + i + j)
-            //         .attr('class', 'food');
-            // }
-            //count++;
-            //}
         }
     } else {
         let food = msg.payloadBytes;
@@ -84,66 +69,39 @@ function onMessageArrived(msg) {
     }
 }
 
+// Event for Key Press
 document.onkeydown = checkKey;
-
 function checkKey(e) {
     let direction = false;
+    // Arrow Keys
     if (e.keyCode == '38') {
-        console.log("up")
-        // up arrow
         direction = 'up'
     } else if (e.keyCode == '40') {
-
-        console.log("down")
-        // down arrow
         direction = 'down'
     } else if (e.keyCode == '37') {
-
-        console.log("left")
-        // left arrow
         direction = 'left'
     } else if (e.keyCode == '39') {
-
-        console.log("right")
-        // right arrow
         direction = 'right'
     }
     if (direction) {
         sendDirection(direction);
     }
-
+    // Spacebar
     if (e.keyCode == '32') {
         sendAction();
     }
 }
 
+// Send direction topic
 function sendDirection(direction) {
     let message = new Paho.MQTT.Message(direction);
     message.destinationName = 'game/snake/direction'
     mqtt.send(message)
 }
 
+// Send action topic
 function sendAction () {
     let message = new Paho.MQTT.Message('');
     message.destinationName = 'game/snake/action'
     mqtt.send(message)
 }
-
-// const client = mqtt.connect(host, port)
-//
-// client.on('error', (err) => {
-//     console.log(err);
-// })
-//
-// client.on('connect', () => {
-//     console.log('connected');
-//     client.subscribe('game/snake/board');
-// });
-//
-// client.on('message', (topic, payload) => {
-//     console.log(topic);
-//     if (topic == 'game/snake/board') {
-//         var direction = payload.toString();
-//         nextDirection = direction;
-//     }
-// });
