@@ -4,6 +4,7 @@ class Direction {
     static Left = new Direction('left');
     static Right = new Direction('right');
 
+    // Convert the direction string to and Direction instance
     static fromString(direction) {
         if (direction === 'u') {
             return this.Up;

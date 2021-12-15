@@ -7,6 +7,7 @@ class LostState extends State {
         this.game.countdown();
     }
 
+    // Returns the static sad smiley
     getBoard() {
         return Buffer.from([
             0b00000000,

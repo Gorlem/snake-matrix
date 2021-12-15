@@ -1,5 +1,6 @@
 const { Buffer } = require('buffer');
 
+// Default implementation for the different States
 class State {
     constructor(game) {
         this.game = game;
@@ -17,6 +18,7 @@ class State {
 
     }
 
+    // Returns an completly empty board by default
     getBoard() {
         const amountOfBytes = Math.ceil(this.game.rows * this.game.columns / 8);
         return Buffer.alloc(amountOfBytes);

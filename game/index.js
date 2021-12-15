@@ -5,8 +5,8 @@ const mqtt = require('mqtt');
 const { Game } = require('./Game');
 const { Direction } = require('./Direction');
 
+// Connect to the mqtt Broker
 const ip = process.env.MQTT_IP;
-
 const client = mqtt.connect(`mqtt://${ip}`);
 
 client.on('error', (err) => {
@@ -14,6 +14,7 @@ client.on('error', (err) => {
 })
 
 client.on('connect', () => {
+    // Subscribe to direction and action messages
     console.log(`Connected to ${ip}`);
     client.subscribe('direction');
     client.subscribe('action');

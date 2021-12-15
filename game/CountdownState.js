@@ -38,6 +38,8 @@ class CountdownState extends State {
         ]
     ]
 
+    // Decreases the countdown by one each tick
+    // If the countdown hits zero the game starts
     tick() {
         if (this.countdown === 0) {
             this.game.snake();

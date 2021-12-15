@@ -2,6 +2,7 @@ const { LostState } = require('./LostState');
 const { CountdownState } = require('./CountdownState');
 const { SnakeState } = require('./SnakeState');
 
+// Class used to delegate functions to the different State instances
 class Game {
     constructor(rows, columns) {
         this.rows = rows;
