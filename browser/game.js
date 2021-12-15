@@ -1,10 +1,10 @@
 // After page load add circles to svg and connect to MQTT
 window.addEventListener('load', () => {
-    let svg = d3.select("svg#game");
+    let svg = d3.select('svg#game');
 
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
-            svg.append("circle")
+            svg.append('circle')
                 .attr('id', 'p' + i + j)
                 .attr('cy', (i + 1) * 100)
                 .attr('cx', (j + 1) * 100)
@@ -14,7 +14,7 @@ window.addEventListener('load', () => {
     }
 
     MQTTconnect();
-})
+});
 
 // MQTT Broker
 let mqtt;
@@ -24,7 +24,7 @@ let port = 8080;
 // Connect to MQTT Broker
 function MQTTconnect() {
     console.log('connecting to ' + host + ' ' + port);
-    mqtt = new Paho.MQTT.Client(host, port, "", "clientjs", transport = "websockets");
+    mqtt = new Paho.MQTT.Client(host, port, '', 'clientjs', transport = 'websockets');
     let options = {
         timeout: 3,
         onSuccess: onConnect
@@ -69,16 +69,16 @@ function checkKey(e) {
     // Arrow Keys
     if (e.keyCode == '38') {
         // up arrow
-        direction = 0;
+        direction = 'u';
     } else if (e.keyCode == '39') {
         // right arrow
-        direction = 1;
+        direction = 'r';
     } else if (e.keyCode == '40') {
         // down arrow
-        direction = 2;
+        direction = 'd';
     } else if (e.keyCode == '37') {
         // left arrow
-        direction = 3;
+        direction = 'l';
     }
     
     if (direction) {

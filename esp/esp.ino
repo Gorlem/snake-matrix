@@ -86,19 +86,19 @@ void loop() {
   int xValue = analogRead(xPin);
   if (xValue == 0) {
     // up
-    sendDirection(0);
+    sendDirection("u");
   } else if (xValue > 4000) {
     // down
-    sendDirection(2);
+    sendDirection("d");
   }
 
   int yValue = analogRead(yPin);
   if (yValue == 0) {
     // right
-    sendDirection(1);
+    sendDirection("r");
   } else if (yValue > 4000) {
     // left
-    sendDirection(3);
+    sendDirection("l");
   }
 
   if (foodpos1 != -1 && foodpos2 != -1) {
@@ -114,8 +114,8 @@ void loop() {
   delay(100);
 }
 
-// Send direction message with Quality-of-Service as 1
-void sendDirection(uint8_t direction) {
+// Send message with Quality-of-Service as 1
+void sendDirection(char direction[]) {
   mqttClient.beginMessage("direction", false, 1);
   mqttClient.print(direction);
   mqttClient.endMessage();

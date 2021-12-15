@@ -22,11 +22,10 @@ client.on('connect', () => {
 const game = new Game(8, 8);
 
 client.on('message', (topic, payload) => {
-    console.log(topic);
     if (topic === 'direction') {
-        game.move(Direction.fromNumer(payload))
+        game.move(Direction.fromString(payload.toString()))
     }
-    if (topic === 'action' ) {
+    if (topic === 'action') {
         game.action();
     }
 });

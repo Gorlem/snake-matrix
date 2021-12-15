@@ -4,15 +4,15 @@ class Direction {
     static Left = new Direction('left');
     static Right = new Direction('right');
 
-    static fromNumber(direction) {
-        if (direction === 0) {
+    static fromString(direction) {
+        if (direction === 'u') {
             return this.Up;
-        } else if (direction === 1) {
-            return this.Right;
-        } else if (direction === 2) {
+        } else if (direction === 'd') {
             return this.Down;
-        } else if (direction === 3) {
+        } else if (direction === 'l') {
             return this.Left;
+        } else if (direction === 'r') {
+            return this.Right;
         }
 
         return null;
