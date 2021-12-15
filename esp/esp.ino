@@ -1,5 +1,5 @@
+// Import 8x8-Dot-Matrix library and define constants
 #include <MD_MAX72xx.h>
-
 #define HARDWARE_TYPE MD_MAX72XX::GENERIC_HW
 #define MAX_DEVICES 1
 
@@ -9,9 +9,11 @@
 
 MD_MAX72XX mx = MD_MAX72XX(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
 
+// Import libraries
 #include <WiFi.h>
 #include <ArduinoMqttClient.h>
 
+// Import settings from arduino_secrets.h
 #include "arduino_secrets.h"
 const char ssid[] = SECRET_SSID;
 const char password[] = SECRET_PASS;
@@ -22,18 +24,21 @@ int port = 1883;
 WiFiClient wifiClient;
 MqttClient mqttClient(wifiClient);
 
+// define pins for Joystick
 int xPin = 35;
 int yPin = 32;
 int buttonPin = 33;
 
+// Run on startup
 void setup() {
   mx.begin();
   Serial.begin(115200);
-  
+
   connectWifi();
   connectMqtt();
 }
 
+// Connect to WiFi
 void connectWifi() {
   WiFi.mode(WIFI_STA);
 
@@ -46,6 +51,7 @@ void connectWifi() {
   Serial.println(WiFi.localIP());
 }
 
+// Connect to MQTT Broker
 void connectMqtt() {
   Serial.print("Attempting to connect to the MQTT broker: ");
   Serial.println(broker);
@@ -68,6 +74,7 @@ int count = 0;
 int foodpos1 = false;
 int foodpos2 = false;
 
+// continuous loop
 void loop() {
   mqttClient.poll();
   
@@ -103,6 +110,7 @@ void loop() {
   delay(100);
 }
 
+// Send message to MQTT Broker
 void sendDirection(char message[]) {
   mqttClient.beginMessage("direction");
   mqttClient.print(message);
@@ -114,6 +122,7 @@ void sendAction() {
   mqttClient.endMessage();
 }
 
+// Receive message from MQTT Broker
 void onMqttMessage(int messageSize) {
   String messageTopic = mqttClient.messageTopic();
 
@@ -125,6 +134,7 @@ void onMqttMessage(int messageSize) {
       mx.setRow(i, row);
     }
 
+    // Remember the position of the apple for blinking
     foodpos1 = mqttClient.read();
     foodpos2 = mqttClient.read();
   }

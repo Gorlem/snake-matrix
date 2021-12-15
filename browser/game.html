@@ -1,135 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Snake</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
-    <script src="https://d3js.org/d3.v5.min.js"></script>
-    <script src="game.js"></script>
+    <head>
+        <meta charset="UTF-8">
+        <title>Snake</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+        <script src="game.js"></script>
 
-    <style>
+        <style>
+            body {
+                margin: 0;
+                height: 100%;
+                width: 100%;
+            }
 
+            .off {
+                fill: white;
+            }
 
-        body {
-            margin: 0;
-            height: 100%;
-            width: 100%;
-        }
+            .on {
+                fill: red;
+            }
 
-        .off {
-            fill: white;
-        }
+            .food {
+                fill: green;
+            }
 
-        .on {
-            fill: red;
-        }
-
-        .food {
-            fill: green;
-        }
-
-        #game {
-            background: black;
-        }
-
-        .arrow {
-            border: solid black;
-            border-width: 0 3px 3px 0;
-            display: inline-block;
-            padding: 3px;
-        }
-
-        .right {
-            transform: rotate(-45deg);
-            -webkit-transform: rotate(-45deg);
-            grid-column: 3;
-            grid-row: 2;
-        }
-
-        .left {
-            transform: rotate(135deg);
-            -webkit-transform: rotate(135deg);
-            grid-column: 1;
-            grid-row: 2;
-        }
-
-        .up {
-            transform: rotate(-135deg);
-            -webkit-transform: rotate(-135deg);
-            grid-column: 2;
-            grid-row: 1;
-        }
-
-        .down {
-            transform: rotate(45deg);
-            -webkit-transform: rotate(45deg);
-            grid-column: 2;
-            grid-row: 3;
-        }
-
-
-
-        .flex-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-        }
-
-
-        @media screen and (orientation:portrait) {
             #game {
-                width: 80vw;
-                height: 80vw;
+                background: black;
             }
-            button {
-                width: 10vw;
-                height: 10vw;
-            }
-            .buttons {
-                alignment: center;
-                display: grid;
-                grid-template-rows: repeat(3,8vw);
-                grid-template-columns: repeat(3,8vw);
-            }
-        }
-        @media screen and (orientation:landscape) {
-            #game {
-                width: 80vh;
-                height: 80vh;
-            }
-            button {
-                width: 10vh;
-                height: 10vh;
-            }
-            .buttons {
-                alignment: center;
-                display: grid;
-                grid-template-rows: repeat(3,8vh);
-                grid-template-columns: repeat(3,8vh);
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="flex-container">
-        <svg id="game" viewBox="0 0 900 900" onclick="sendAction()">
 
-        </svg>
-        <div class="buttons">
-            <button class="arrow left" onclick="sendDirection('left')">
+            .arrow {
+                border: solid black;
+                border-width: 0 3px 3px 0;
+                display: inline-block;
+                padding: 3px;
+            }
 
-            </button>
-            <button class="arrow up" onclick="sendDirection('up')">
+            .right {
+                transform: rotate(-45deg);
+                -webkit-transform: rotate(-45deg);
+                grid-column: 3;
+                grid-row: 2;
+            }
 
-            </button>
-            <button class="arrow down" onclick="sendDirection('down')">
+            .left {
+                transform: rotate(135deg);
+                -webkit-transform: rotate(135deg);
+                grid-column: 1;
+                grid-row: 2;
+            }
 
-            </button>
-            <button class="arrow right" onclick="sendDirection('right')">
+            .up {
+                transform: rotate(-135deg);
+                -webkit-transform: rotate(-135deg);
+                grid-column: 2;
+                grid-row: 1;
+            }
 
-            </button>
+            .down {
+                transform: rotate(45deg);
+                -webkit-transform: rotate(45deg);
+                grid-column: 2;
+                grid-row: 3;
+            }
+
+            .flex-container {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+            }
+
+            @media screen and (orientation:portrait) {
+                #game {
+                    width: 80vw;
+                    height: 80vw;
+                }
+                button {
+                    width: 10vw;
+                    height: 10vw;
+                }
+                .buttons {
+                    alignment: center;
+                    display: grid;
+                    grid-template-rows: repeat(3,8vw);
+                    grid-template-columns: repeat(3,8vw);
+                }
+            }
+            
+            @media screen and (orientation:landscape) {
+                #game {
+                    width: 80vh;
+                    height: 80vh;
+                }
+                button {
+                    width: 10vh;
+                    height: 10vh;
+                }
+                .buttons {
+                    alignment: center;
+                    display: grid;
+                    grid-template-rows: repeat(3,8vh);
+                    grid-template-columns: repeat(3,8vh);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="flex-container">
+            <svg id="game" viewBox="0 0 900 900" onclick="sendAction()"></svg>
+            <div class="buttons">
+                <button class="arrow left" onclick="sendDirection('left')"></button>
+                <button class="arrow up" onclick="sendDirection('up')"></button>
+                <button class="arrow down" onclick="sendDirection('down')"></button>
+                <button class="arrow right" onclick="sendDirection('right')"></button>
+            </div>
         </div>
-    </div>
-</body>
+    </body>
 </html>
