@@ -24,7 +24,7 @@ const game = new Game(8, 8);
 client.on('message', (topic, payload) => {
     console.log(topic);
     if (topic === 'direction') {
-        game.move(Direction.fromString(payload.toString()))
+        game.move(Direction.fromNumer(payload))
     }
     if (topic === 'action' ) {
         game.action();

@@ -1,6 +1,6 @@
 // After page load add circles to svg and connect to MQTT
 window.addEventListener('load', () => {
-    let svg = d3.select("svg#game")
+    let svg = d3.select("svg#game");
 
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
@@ -9,7 +9,7 @@ window.addEventListener('load', () => {
                 .attr('cy', (i + 1) * 100)
                 .attr('cx', (j + 1) * 100)
                 .attr('r', 40)
-                .attr('class', 'off')
+                .attr('class', 'off');
         }
     }
 
@@ -42,10 +42,10 @@ function onConnect() {
 // Receive MQTT Message and Display the information
 function onMessageArrived(msg) {
     if (msg.destinationName === 'board') {
-        let board = msg.payloadBytes
+        let board = msg.payloadBytes;
  
         for (let i = 0; i < 8; i++) {
-            let base2 = board[i].toString(2).padStart(8, '0')
+            let base2 = board[i].toString(2).padStart(8, '0');
             
             // Set all fields to either on or off, depending on the bit from the message
             for (let j = 0; j < base2.length; j++) {
@@ -58,7 +58,7 @@ function onMessageArrived(msg) {
         }
 
         // Add the food class to the apple
-        d3.select('circle#p' + board[8] + board[9]).attr('class', 'food')
+        d3.select('circle#p' + board[8] + board[9]).attr('class', 'food');
     }
 }
 
@@ -69,17 +69,16 @@ function checkKey(e) {
     // Arrow Keys
     if (e.keyCode == '38') {
         // up arrow
-        direction = 'up'
-    } else if (e.keyCode == '40') {
-        // down arrow
-        direction = 'down'
-    } else if (e.keyCode == '37') {
-        // left arrow
-        direction = 'left'
+        direction = 0;
     } else if (e.keyCode == '39') {
         // right arrow
-
-        direction = 'right'
+        direction = 1;
+    } else if (e.keyCode == '40') {
+        // down arrow
+        direction = 2;
+    } else if (e.keyCode == '37') {
+        // left arrow
+        direction = 3;
     }
     
     if (direction) {
@@ -95,13 +94,15 @@ function checkKey(e) {
 // Send direction topic
 function sendDirection(direction) {
     let message = new Paho.MQTT.Message(direction);
-    message.destinationName = 'direction'
-    mqtt.send(message)
+    message.destinationName = 'direction';
+    message.qos = 1;
+    mqtt.send(message);
 }
 
 // Send action topic
 function sendAction () {
     let message = new Paho.MQTT.Message('');
-    message.destinationName = 'action'
-    mqtt.send(message)
+    message.destinationName = 'action';
+    message.qos = 1;
+    mqtt.send(message);
 }

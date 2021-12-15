@@ -85,16 +85,20 @@ void loop() {
 
   int xValue = analogRead(xPin);
   if (xValue == 0) {
-    sendDirection("up");
+    // up
+    sendDirection(0);
   } else if (xValue > 4000) {
-    sendDirection("down");
+    // down
+    sendDirection(2);
   }
 
   int yValue = analogRead(yPin);
   if (yValue == 0) {
-    sendDirection("right");
+    // right
+    sendDirection(1);
   } else if (yValue > 4000) {
-    sendDirection("left");
+    // left
+    sendDirection(3);
   }
 
   if (foodpos1 != -1 && foodpos2 != -1) {
@@ -110,15 +114,16 @@ void loop() {
   delay(100);
 }
 
-// Send message to MQTT Broker
-void sendDirection(char message[]) {
-  mqttClient.beginMessage("direction");
-  mqttClient.print(message);
+// Send direction message with Quality-of-Service as 1
+void sendDirection(uint8_t direction) {
+  mqttClient.beginMessage("direction", false, 1);
+  mqttClient.print(direction);
   mqttClient.endMessage();
 }
 
+// Send action message with Quality-of-Service as 1
 void sendAction() {
-  mqttClient.beginMessage("action");
+  mqttClient.beginMessage("action", false, 1);
   mqttClient.endMessage();
 }
 
