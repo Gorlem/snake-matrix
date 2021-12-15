@@ -1,6 +1,6 @@
 window.addEventListener('load', () => {
     let svg = d3.select("svg#game")
-    console.log(svg)
+
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
 
@@ -24,9 +24,7 @@ let port = 8080;
 
 function onConnect() {
     console.log('connected');
-
     mqtt.subscribe('board');
-
 }
 
 function MQTTconnect() {
@@ -46,13 +44,12 @@ function onMessageArrived(msg) {
  
         for (let i = 0; i < 8; i++) {
             let base2 = board[i].toString(2)
-            
+
             for (let j = 0; j < 8 - base2.length; j++) {
                 d3.select('circle#p' + i + j).attr('class', 'off');
             }
             
             for (let j = 0; j < base2.length; j++) {
-                console.log((8 - base2.length + j))
                 if (base2[j] == 1) {
                     d3.select('circle#p' + i + (8 - base2.length + j))
                         .attr('class', 'on');
@@ -71,25 +68,19 @@ document.onkeydown = checkKey;
 function checkKey(e) {
     let direction = false;
     if (e.keyCode == '38') {
-        console.log("up")
         // up arrow
         direction = 'up'
     } else if (e.keyCode == '40') {
-
-        console.log("down")
         // down arrow
         direction = 'down'
     } else if (e.keyCode == '37') {
-
-        console.log("left")
         // left arrow
         direction = 'left'
     } else if (e.keyCode == '39') {
-
-        console.log("right")
         // right arrow
         direction = 'right'
     }
+    
     if (direction) {
         sendDirection(direction);
     }

@@ -35,5 +35,5 @@ setInterval(() => {
     game.tick();
     const board = game.getBoard();
     const extras = game.getExtras().flat();
-    client.publish('board', board.concat(Buffer.from(extras)));
+    client.publish('board', Buffer.concat([board, Buffer.from(extras)]));
 }, 1000);
